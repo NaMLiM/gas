@@ -1,3 +1,56 @@
+// Mobile Menu Toggle
+const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+const nav = document.querySelector('.nav');
+const navLinks = document.querySelectorAll('.nav-link');
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+const backdrop = document.querySelector('.mobile-menu-backdrop');
+
+if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        nav.classList.toggle('active');
+        if (backdrop) backdrop.classList.toggle('active');
+    });
+
+    // Close menu when clicking backdrop
+    if (backdrop) {
+        backdrop.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            backdrop.classList.remove('active');
+        });
+    }
+
+    // Close menu when clicking nav links (only non-dropdown parent links)
+    navLinks.forEach(link => {
+        if (!link.closest('.nav-dropdown')) {
+            link.addEventListener('click', () => {
+                mobileMenuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                if (backdrop) backdrop.classList.remove('active');
+            });
+        }
+    });
+
+    // Close menu when clicking dropdown items
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', () => {
+            mobileMenuToggle.classList.remove('active');
+            nav.classList.remove('active');
+            if (backdrop) backdrop.classList.remove('active');
+        });
+    });
+}
+
+// Close mobile menu on resize to desktop
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 968) {
+        nav.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        if (backdrop) backdrop.classList.remove('active');
+    }
+});
+
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -15,98 +68,62 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Intersection Observer for scroll animations
 const observerOptions = {
     threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+    rootMargin: '0px 0px -50px 0px'
 };
 
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.animation = 'fadeIn 0.8s ease forwards';
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
             observer.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-// Observe all sections and cards
+// Observe cards and sections for animation on scroll
 document.addEventListener('DOMContentLoaded', () => {
-    const animatedElements = document.querySelectorAll('.product-card, .gallery-item, .service-item');
+    const animatedElements = document.querySelectorAll('.product-card, .service-card, .advantage-item, .vgl-card');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
     });
 });
 
-// Add parallax effect to hero section
+// Add active class to nav links based on scroll position
 window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero && scrolled < window.innerHeight) {
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-    }
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    let currentSection = '';
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.pageYOffset >= (sectionTop - 100)) {
+            currentSection = section.getAttribute('id');
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${currentSection} `) {
+            link.classList.add('active');
+        }
+    });
 });
 
-// Add active state to buttons on click
+// Add click animation to buttons
 document.querySelectorAll('.btn').forEach(button => {
-    button.addEventListener('click', function () {
-        this.style.transform = 'scale(0.95)';
+    button.addEventListener('click', function (e) {
+        this.style.transform = 'scale(0.95) translateY(-3px)';
         setTimeout(() => {
             this.style.transform = '';
         }, 150);
     });
 });
 
-// Add hover effect to product cards
-document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('mouseenter', function () {
-        this.style.transform = 'translateY(-10px) scale(1.02)';
-    });
+// Console log
+console.log('Abadi Gas website loaded successfully! ✅');
 
-    card.addEventListener('mouseleave', function () {
-        this.style.transform = '';
-    });
-});
-
-// Lazy load images (if you add real images later)
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
-                }
-            }
-        });
-    });
-
-    document.querySelectorAll('img.lazy').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
-// Add ripple effect to service items
-document.querySelectorAll('.service-item').forEach(item => {
-    item.addEventListener('click', function (e) {
-        const ripple = document.createElement('span');
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        ripple.classList.add('ripple');
-
-        this.appendChild(ripple);
-
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
-    });
-});
-
-// Console log for debugging
-console.log('Abadi Gas website loaded successfully! 🚀');
