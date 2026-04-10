@@ -3,51 +3,73 @@ const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 const nav = document.querySelector('.nav');
 const navLinks = document.querySelectorAll('.nav-link');
 const dropdownItems = document.querySelectorAll('.dropdown-item');
-const backdrop = document.querySelector('.mobile-menu-backdrop');
+const dropdownTriggers = document.querySelectorAll('.nav-dropdown > .nav-link');
+let backdrop = document.querySelector('.mobile-menu-backdrop');
+
+if (!backdrop && nav && nav.parentElement) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'mobile-menu-backdrop';
+    nav.parentElement.appendChild(backdrop);
+}
+
+const closeMobileMenu = () => {
+    if (!mobileMenuToggle || !nav) return;
+    mobileMenuToggle.classList.remove('active');
+    nav.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.classList.remove('mobile-menu-open');
+    document.querySelectorAll('.nav-dropdown.open').forEach(dropdown => {
+        dropdown.classList.remove('open');
+    });
+};
 
 if (mobileMenuToggle) {
     mobileMenuToggle.addEventListener('click', () => {
         mobileMenuToggle.classList.toggle('active');
         nav.classList.toggle('active');
         if (backdrop) backdrop.classList.toggle('active');
+        document.body.classList.toggle('mobile-menu-open', nav.classList.contains('active'));
     });
 
     // Close menu when clicking backdrop
     if (backdrop) {
-        backdrop.addEventListener('click', () => {
-            mobileMenuToggle.classList.remove('active');
-            nav.classList.remove('active');
-            backdrop.classList.remove('active');
-        });
+        backdrop.addEventListener('click', closeMobileMenu);
     }
 
-    // Close menu when clicking nav links (only non-dropdown parent links)
+    // Expand/collapse layanan submenu on mobile
+    dropdownTriggers.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (window.innerWidth > 968) return;
+            e.preventDefault();
+            const dropdown = link.closest('.nav-dropdown');
+            if (!dropdown) return;
+            dropdown.classList.toggle('open');
+        });
+    });
+
+    // Close menu when clicking nav links
     navLinks.forEach(link => {
-        if (!link.closest('.nav-dropdown')) {
-            link.addEventListener('click', () => {
-                mobileMenuToggle.classList.remove('active');
-                nav.classList.remove('active');
-                if (backdrop) backdrop.classList.remove('active');
-            });
-        }
+        if (link.closest('.nav-dropdown')) return;
+        link.addEventListener('click', closeMobileMenu);
     });
 
     // Close menu when clicking dropdown items
     dropdownItems.forEach(item => {
-        item.addEventListener('click', () => {
-            mobileMenuToggle.classList.remove('active');
-            nav.classList.remove('active');
-            if (backdrop) backdrop.classList.remove('active');
-        });
+        item.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close on Escape key for better mobile accessibility
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && nav.classList.contains('active')) {
+            closeMobileMenu();
+        }
     });
 }
 
 // Close mobile menu on resize to desktop
 window.addEventListener('resize', () => {
     if (window.innerWidth > 968) {
-        nav.classList.remove('active');
-        mobileMenuToggle.classList.remove('active');
-        if (backdrop) backdrop.classList.remove('active');
+        closeMobileMenu();
     }
 });
 
@@ -86,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const animatedElements = document.querySelectorAll('.product-card, .service-card, .advantage-item, .vgl-card');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        el.style.transform = 'translateY(32px)';
+        el.style.transition = 'opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1)';
         observer.observe(el);
     });
 });
@@ -117,7 +139,7 @@ window.addEventListener('scroll', () => {
 // Add click animation to buttons
 document.querySelectorAll('.btn').forEach(button => {
     button.addEventListener('click', function (e) {
-        this.style.transform = 'scale(0.95) translateY(-3px)';
+        this.style.transform = 'scale(0.92) translateY(-6px)';
         setTimeout(() => {
             this.style.transform = '';
         }, 150);
