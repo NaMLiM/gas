@@ -138,6 +138,26 @@ p {
     align-items: center;
 }
 
+.logo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.logo-image {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: var(--shadow-sm);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
 .logo h1 {
     font-size: 1.5rem;
     color: var(--primary-blue);
@@ -256,7 +276,7 @@ p {
    ========================================== */
 .hero {
     min-height: 70vh;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    background: var(--primary-dark) url('img/hero_banner.jpeg') center center / cover no-repeat;
     position: relative;
     display: flex;
     align-items: center;
@@ -267,22 +287,18 @@ p {
 .hero::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 50%, rgba(255, 166, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(0, 128, 255, 0.15) 0%, transparent 50%);
+    inset: 0;
+    background: url('img/hero_banner.jpeg') center center / cover no-repeat;
+    transform: scale(1.05);
+    filter: blur(6px);
+    z-index: 0;
 }
 
 .hero-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.2) 100%);
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 38, 76, 0.65) 0%, rgba(0, 58, 112, 0.6) 50%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
 }
 
 .hero-content {
@@ -609,8 +625,22 @@ p {
    Advantages Section
    ========================================== */
 .advantages-section {
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    background: url('img/why_us.jpeg') center center / cover no-repeat;
     color: var(--white);
+    overflow: hidden;
+}
+
+.advantages-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 42, 84, 0.68) 0%, rgba(0, 82, 163, 0.58) 100%);
+    z-index: 0;
+}
+
+.advantages-section > .container {
+    position: relative;
+    z-index: 1;
 }
 
 .advantages-content-center {
@@ -892,6 +922,11 @@ p {
     .logo h1 {
         font-size: 1.2rem;
     }
+
+    .logo-image {
+        width: 44px;
+        height: 44px;
+    }
     
     .logo .tagline {
         font-size: 0.7rem;
@@ -1060,6 +1095,11 @@ p {
     .logo h1 {
         font-size: 1.1rem;
     }
+
+    .logo-image {
+        width: 40px;
+        height: 40px;
+    }
     
     .nav {
         top: 0;
@@ -1186,6 +1226,67 @@ p {
     color: var(--white);
     padding: calc(var(--spacing-xl) + 80px) 0 var(--spacing-xl);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-header > .container {
+    position: relative;
+    z-index: 2;
+}
+
+.page-header-products::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('img/hero_banner.jpeg') center / cover no-repeat;
+    transform: scale(1.03);
+    filter: blur(2.5px) brightness(0.58);
+    z-index: 0;
+}
+
+.page-header-products::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(0, 34, 74, 0.48), rgba(0, 52, 112, 0.42));
+    z-index: 1;
+}
+
+.page-header-instalasi::before,
+.page-header-refill::before,
+.page-header-jual-beli::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: scale(1.04);
+    filter: blur(3px) brightness(0.52);
+    z-index: 0;
+}
+
+.page-header-instalasi::before {
+    background-image: url('img/instalasi_medis.jpeg');
+}
+
+.page-header-refill::before {
+    background-image: url('img/refill_gas.jpeg');
+}
+
+.page-header-jual-beli::before {
+    background-image: url('img/jual_beli_tabung.jpeg');
+}
+
+.page-header-instalasi::after,
+.page-header-refill::after,
+.page-header-jual-beli::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(0, 34, 74, 0.56), rgba(0, 52, 112, 0.5));
+    z-index: 1;
 }
 
 .page-header h1 {
